@@ -5,6 +5,7 @@ from ruamel import yaml
 
 from curious.commands.bot import CommandsBot
 from curious.commands.context import Context
+from curious.commands.exc import CheckFailureError, MissingArgumentError
 from curious.dataclasses import Game, Status, Message
 from curious.event import EventContext
 
@@ -24,8 +25,11 @@ class Curiosity(CommandsBot):
         self.logger = logbook.Logger("curiosity")
 
     async def on_command_error(self, ctx: Context, exc: Exception):
-        fmtted = traceback.format_exception(None, exc, exc.__traceback__)
-        await ctx.channel.send("```{}```".format(''.join(fmtted)))
+        if isinstance(exc, (CheckFailureError, MissingArgumentError)):
+            await ctx.channel.send(":x: {}".format(str(exc)))
+        else:
+            fmtted = traceback.format_exception(None, exc, exc.__traceback__)
+            await ctx.channel.send("```{}```".format(''.join(fmtted)))
 
     async def on_connect(self, ctx):
         self.logger.info("Connected to Discord on shard {0}, "
