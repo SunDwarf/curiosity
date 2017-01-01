@@ -1,14 +1,17 @@
 """
 Main bot file for Curiosity.
 """
+import inspect
 import sys
 import logging
+import traceback
 
 from logbook.compat import redirect_logging
 from ruamel import yaml
 from curious.commands.bot import CommandsBot
 import logbook
 
+from curious.commands.context import Context
 from curious.dataclasses import Game
 from curious.dataclasses import Message
 from curious.dataclasses import Status
@@ -34,6 +37,10 @@ class Curiosity(CommandsBot):
         super().__init__(token, command_prefix="c!")
 
         self.logger = logbook.Logger("curiosity")
+
+    async def on_command_error(self, ctx: Context, exc: Exception):
+        fmtted = traceback.format_exception(None, exc, exc.__traceback__)
+        await ctx.channel.send("```{}```".format(''.join(fmtted)))
 
     async def on_connect(self, ctx):
         self.logger.info("Connected to Discord on shard {0}, "
