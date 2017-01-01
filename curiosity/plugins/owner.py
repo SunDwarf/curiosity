@@ -32,7 +32,7 @@ class Owner(Plugin):
         fmtted = "```py\n{}\n```".format(result)
         await msg.edit(fmtted)
 
-    @commands.command(name="load", invokation_checks=[is_owner])
+    @commands.command(name="load")
     async def _load(self, ctx: Context, *, import_name: str):
         """
         Loads a plugin.
@@ -40,7 +40,7 @@ class Owner(Plugin):
         await self.bot.load_plugins_from(import_name)
         await ctx.message.channel.send(":heavy_check_mark: Loaded.")
 
-    @commands.command(name="unload", invokation_checks=[is_owner])
+    @commands.command(name="unload")
     async def _unload(self, ctx: Context, *, import_name: str):
         """
         Unloads a plugin.
