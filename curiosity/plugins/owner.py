@@ -1,6 +1,9 @@
 import inspect
 import traceback
 
+import curio
+from curio.traps import _get_kernel
+
 from curious import commands
 from curious.commands.context import Context
 from curious.commands.plugin import Plugin
@@ -50,3 +53,12 @@ class Owner(Plugin):
         """
         await self.bot.unload_plugins_from(import_name)
         await ctx.message.channel.send(":heavy_check_mark: Unloaded.")
+
+    @commands.command(aliases=["harakiri"])
+    async def seppeku(self, ctx: Context):
+        """
+        Kills the bot, forcefully.
+        """
+        import ctypes
+        await ctx.channel.send(":skull_and_crossbones:")
+        ctypes.string_at(1)
