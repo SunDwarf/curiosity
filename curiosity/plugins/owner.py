@@ -18,6 +18,9 @@ class Owner(Plugin):
 
     @commands.command(name="eval")
     async def _eval(self, ctx: Context, *, eval_str: str):
+        """
+        [Eval](https://docs.python.org/3.6/library/functions.html#eval)uates a command.
+        """
         msg = await ctx.channel.send("Evaluating...")
         try:
             result = eval(eval_str)
