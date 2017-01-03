@@ -54,10 +54,10 @@ class Owner(Plugin):
         await self.bot.unload_plugins_from(import_name)
         await ctx.message.channel.send(":heavy_check_mark: Unloaded.")
 
-    @commands.command(aliases=["harakiri"])
+    @commands.command(aliases=["harakiri", "sudoku"])
     async def seppeku(self, ctx: Context):
         """
-        Kills the bot, forcefully.
+        Please don't do this to me.
         """
         import ctypes
         await ctx.channel.send(":skull_and_crossbones:")
