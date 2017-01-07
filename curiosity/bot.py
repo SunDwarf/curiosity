@@ -42,7 +42,14 @@ class Curiosity(CommandsBot):
         ), status=Status.DND, shard_id=ctx.shard_id)
 
     async def on_ready(self, ctx):
-        await self.load_plugins_from("curiosity.plugins.owner")
+        plugins = self.config.get("plugins", [])
+        for plugin in plugins:
+            try:
+                await self.load_plugins_from(plugin)
+            except:
+                self.logger.exception("Failed to load {}!".format(plugin))
+            else:
+                self.logger.info("Loaded plugin {}.".format(plugin))
 
     async def on_message_create(self, ctx: EventContext, message: Message):
         self.logger.info("Recieved message: {message.content} "
