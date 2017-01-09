@@ -25,7 +25,7 @@ class Fuyu(Plugin):
         """
         coros = []
         for member in ctx.guild.members:
-            coros.append(await curio.spawn(member.change_nickname(member.name.upper())))
+            coros.append(await curio.spawn(member.change_nickname(member.user.name.upper())))
 
         async with ctx.channel.typing:
             results = await curio.gather(coros, return_exceptions=True)
@@ -40,7 +40,7 @@ class Fuyu(Plugin):
         """
         coros = []
         for member in ctx.guild.members:
-            coros.append(await curio.spawn(member.change_nickname(member.name.lower())))
+            coros.append(await curio.spawn(member.change_nickname(member.user.name.lower())))
 
         async with ctx.channel.typing:
             results = await curio.gather(coros, return_exceptions=True)
@@ -48,6 +48,22 @@ class Fuyu(Plugin):
         exc = sum(1 for x in results if isinstance(x, Exception))
 
         await ctx.channel.send(":zzz: (`{}` changed, `{}` failed)".format(len(results) - exc, exc))
+
+    @command(invokation_checks=[has_admin])
+    async def massnick(self, ctx: Context, prefix: str="", suffix: str=""):
+        """
+        Mass-nicks the server.
+        """
+        coros = []
+        for member in ctx.guild.members:
+            coros.append(await curio.spawn(member.change_nickname("{}{}{}".format(prefix, member.user.name, suffix))))
+
+        async with ctx.channel.typing:
+            results = await curio.gather(coros, return_exceptions=True)
+
+        exc = sum(1 for x in results if isinstance(x, Exception))
+
+        await ctx.channel.send(":100: (`{}` changed, `{}` failed)".format(len(results) - exc, exc))
 
     @command(aliases=["mute"], invokation_checks=[has_admin])
     async def parental_control(self, ctx: Context, victim: Member, timeout: int):
