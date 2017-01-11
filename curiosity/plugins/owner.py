@@ -2,6 +2,7 @@ import inspect
 import traceback
 
 import curio
+import sys
 from curio.traps import _get_kernel
 
 from curious import commands
@@ -26,7 +27,7 @@ class Owner(Plugin):
         """
         msg = await ctx.channel.send("Evaluating...")
         try:
-            result = eval(eval_str)
+            result = eval(eval_str, {**sys.modules, **globals()}, locals())
             if inspect.isawaitable(result):
                 result = await result
 
