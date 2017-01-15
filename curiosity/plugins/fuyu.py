@@ -1,9 +1,13 @@
+import random
+
 import curio
 
 from curious.commands import command
 from curious.commands.context import Context
 from curious.commands.plugin import Plugin
 from curious.dataclasses import Member
+
+import romkan
 
 
 def has_admin(ctx: Context):
@@ -81,3 +85,22 @@ class Fuyu(Plugin):
         await ctx.channel.send("{} is back in the arena".format(victim.user.mention))
         await ctx.guild.remove_roles(victim, role)
 
+    @command(invokation_checks=[has_admin])
+    async def weebify(self, ctx: Context):
+        """
+        Weebifys the server.
+        """
+        coros = []
+        for member in ctx.guild.members:
+            r = random.choice([1, 2])
+            if r == 1:
+                name = romkan.to_katakana(member.user.username)
+            elif r == 2:
+                name = romkan.to_hiragana(member.user.username)
+            coros.append(await curio.spawn(member.change_nickname(name)))
+
+        async with ctx.channel.typing:
+            results = await curio.gather(coros, return_exceptions=True)
+
+        exc = sum(1 for x in results if isinstance(x, Exception))
+        await ctx.channel.send("Kawaii sugoi desu! (`{}` changed, `{}` failed)".format(len(results) - exc, exc))
