@@ -42,6 +42,9 @@ class Curiosity(CommandsBot):
         ), status=Status.DND, shard_id=ctx.shard_id)
 
     async def on_ready(self, ctx):
+        if ctx.shard_id != 0:
+            return
+
         plugins = self.config.get("plugins", [])
         for plugin in plugins:
             try:
