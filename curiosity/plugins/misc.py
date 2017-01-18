@@ -26,6 +26,8 @@ class Misc(Plugin):
         em.add_field(name="Shard count", value=ctx.event_context.shard_count)
         em.add_field(name="Heartbeats", value=ctx.bot._gateways[ctx.event_context.shard_id].heartbeats)
 
+        em.set_footer(text="Curio is the future!")
+
         await ctx.channel.send(embed=em)
 
 
