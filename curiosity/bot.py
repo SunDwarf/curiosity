@@ -37,11 +37,13 @@ class Curiosity(CommandsBot):
         self.logger.info("I am owned by {0.name}#{0.discriminator}.".format(self.application_info.owner))
         self.logger.info("Invite URL: {}".format(self.invite_url))
 
-        await self.change_status(game=Game(
-            name="[shard {}/{}] curio is the future!".format(ctx.shard_id + 1, self.shard_count)
-        ), status=Status.DND, shard_id=ctx.shard_id)
+        await self.change_status(game=Game(name="curiosity loading..."), status=Status.DND, shard_id=ctx.shard_id)
 
     async def on_ready(self, ctx):
+        await self.change_status(game=Game(
+            name="[shard {}/{}] curio is the future!".format(ctx.shard_id + 1, self.shard_count)
+        ), status=Status.ONLINE, shard_id=ctx.shard_id)
+
         if ctx.shard_id != 0:
             return
 
