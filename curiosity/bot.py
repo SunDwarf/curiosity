@@ -5,7 +5,7 @@ from ruamel import yaml
 
 from curious.commands.bot import CommandsBot
 from curious.commands.context import Context
-from curious.commands.exc import CheckFailureError, MissingArgumentError
+from curious.commands.exc import CheckFailureError, MissingArgumentError, ConversionFailedError
 from curious.dataclasses import Game, Status, Message
 from curious.event import EventContext
 
@@ -25,7 +25,7 @@ class Curiosity(CommandsBot):
         self.logger = logbook.Logger("curiosity")
 
     async def on_command_error(self, ctx: Context, exc: Exception):
-        if isinstance(exc, (CheckFailureError, MissingArgumentError)):
+        if isinstance(exc, (CheckFailureError, MissingArgumentError, ConversionFailedError)):
             await ctx.channel.send(":x: {}".format(str(exc)))
         else:
             fmtted = traceback.format_exception(None, exc, exc.__traceback__)
