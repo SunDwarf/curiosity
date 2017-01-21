@@ -1,13 +1,14 @@
 import random
 
 import curio
+import romkan
 
 from curious.commands import command
 from curious.commands.context import Context
 from curious.commands.plugin import Plugin
-from curious.dataclasses import Member
+from curious.http.curio_http import ClientSession
 
-import romkan
+AUTHORIZATION_URL = "https://discordapp.com/api/v6/oauth2/authorize"
 
 
 def has_admin(ctx: Context):
@@ -21,6 +22,44 @@ class Fuyu(Plugin):
 
     async def plugin_check(self, ctx: Context):
         return ctx.guild.id == 198101180180594688
+
+    @command()
+    async def addbot(self, ctx: Context, bot_id: int):
+        """
+        Adds your bot to my server.
+
+        Your bot must not be private. You will not get any permissions.
+        """
+        payload = {
+            "guild_id": ctx.guild.id,
+            "authorize": True,
+            "permissions": 0
+        }
+
+        headers = {
+            "Authorization": ctx.bot.config.get("bot_add_token"),
+            "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) "
+                          "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2950.4 Safari/537.36",
+            "Content-Type": "application/json"
+        }
+
+        async with ClientSession() as sess:
+            response = await sess.post(AUTHORIZATION_URL,
+                                       params={
+                                           "client_id": str(bot_id),
+                                           "scope": "bot"
+                                           },
+                                       headers=headers,
+                                       json=payload)
+
+            js = await response.json()
+            if response.status_code != 200:
+                await ctx.channel.send("\N{NO ENTRY SIGN} Failed to add bot to server! Error `{}`".format(js))
+            else:
+                if 'location' in js and 'invalid_request' in js['location']:
+                    await ctx.channel.send("\N{NO ENTRY SIGN} Invalid client ID.")
+                else:
+                    await ctx.channel.send("\N{THUMBS UP SIGN} Added new bot.")
 
     @command(aliases=["shouting"], invokation_checks=[has_admin])
     async def screaming(self, ctx: Context):
@@ -54,7 +93,7 @@ class Fuyu(Plugin):
         await ctx.channel.send(":zzz: (`{}` changed, `{}` failed)".format(len(results) - exc, exc))
 
     @command(invokation_checks=[has_admin])
-    async def massnick(self, ctx: Context, prefix: str="", suffix: str=""):
+    async def massnick(self, ctx: Context, prefix: str = "", suffix: str = ""):
         """
         Mass-nicks the server.
         """
@@ -68,22 +107,6 @@ class Fuyu(Plugin):
         exc = sum(1 for x in results if isinstance(x, Exception))
 
         await ctx.channel.send(":100: (`{}` changed, `{}` failed)".format(len(results) - exc, exc))
-
-    @command(aliases=["mute"], invokation_checks=[has_admin])
-    async def parental_control(self, ctx: Context, victim: Member, timeout: int):
-        """
-        Mutes a member. Mention somebody and give a timeout in seconds.
-        """
-        role = ctx.guild.get_role(248525039400517632)
-        if not role:
-            await ctx.channel.send("<@133139430495092737>")
-            return
-
-        await ctx.guild.add_roles(victim, role)
-        await ctx.channel.send("{} needs to sit out".format(victim.user.mention))
-        await curio.sleep(timeout)
-        await ctx.channel.send("{} is back in the arena".format(victim.user.mention))
-        await ctx.guild.remove_roles(victim, role)
 
     @command(invokation_checks=[has_admin])
     async def weebify(self, ctx: Context):
