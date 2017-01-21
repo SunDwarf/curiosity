@@ -125,9 +125,9 @@ class Fuyu(Plugin):
         for member in ctx.guild.members:
             r = random.choice([1, 2])
             if r == 1:
-                name = romkan.to_katakana(member.user.username)
+                name = romkan.to_katakana(member.nickname)
             elif r == 2:
-                name = romkan.to_hiragana(member.user.username)
+                name = romkan.to_hiragana(member.nickname)
             coros.append(await curio.spawn(member.change_nickname(name)))
 
         async with ctx.channel.typing:
