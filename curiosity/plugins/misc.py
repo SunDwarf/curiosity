@@ -1,5 +1,7 @@
-import curio
+import datetime
 import sys
+
+import curio
 
 import curious
 from curious.commands import command
@@ -27,7 +29,7 @@ class Misc(Plugin):
         em.add_field(name="Heartbeats", value=ctx.bot._gateways[ctx.event_context.shard_id].heartbeats)
 
         em.set_footer(text="Curio is the future!")
+        em.timestamp = datetime.datetime.now()
 
         await ctx.channel.send(embed=em)
-
 
