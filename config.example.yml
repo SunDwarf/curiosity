@@ -1,0 +1,11 @@
+# The example config file. #
+# ======================== #
+
+# The token to log the bot in with.
+bot_token: "mfa.nferfbefetvf"
+
+# The plugins to load with the bot.
+plugins:
+  - curiosity.plugins.owner
+  - curiosity.plugins.misc
+
