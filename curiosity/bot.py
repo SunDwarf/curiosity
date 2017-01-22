@@ -29,7 +29,7 @@ class Curiosity(CommandsBot):
         if isinstance(exc, (CheckFailureError, MissingArgumentError, ConversionFailedError)):
             await ctx.channel.send(":x: {}".format(str(exc)))
         else:
-            fmtted = traceback.format_exception(None, exc, exc.__traceback__)
+            fmtted = traceback.format_exception(None, exc.__cause__, exc.__cause__.__traceback__)
             final = "```{}```".format(''.join(fmtted))
             if len(final) < 1900:
                 await ctx.channel.send(final)
