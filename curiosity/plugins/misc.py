@@ -1,6 +1,7 @@
 import datetime
 import inspect
 import sys
+import time
 
 import curio
 import pyowm
@@ -12,6 +13,7 @@ from pyowm.webapi25.forecaster import Forecaster
 from pyowm.webapi25.location import Location
 from pyowm.webapi25.observation import Observation
 from pyowm.webapi25.weather import Weather
+import psutil
 
 import curious
 from curiosity.bot import Curiosity
@@ -72,9 +74,26 @@ class Misc(Plugin):
         em.add_field(name="Shard ID", value=ctx.event_context.shard_id)
         em.add_field(name="Shard count", value=ctx.event_context.shard_count)
         em.add_field(name="Heartbeats", value=ctx.bot._gateways[ctx.event_context.shard_id].heartbeats)
+        # general stats
+        us = psutil.Process()
+        used_memory = us.memory_info().rss
+        used_memory = round(used_memory / 1024 / 1024, 2)
+        cpu = us.cpu_percent()
+
+        # get uptime
+        start = us.create_time()
+        uptime = time.time() - start
+        m, s = divmod(uptime, 60)
+        h, m = divmod(m, 60)
+        d, h = divmod(h, 24)
+
+        em.add_field(name="Memory", value="{}MiB".format(used_memory))
+        em.add_field(name="CPU", value="{}%".format(cpu))
+        em.add_field(name="Uptime", value="{}d {}h {}m {}s".format(int(d), int(h), int(m), int(s)))
 
         em.set_footer(text="Curio is the future!")
         em.timestamp = datetime.datetime.now()
+        em.colour = ctx.author.colour
 
         await ctx.channel.send(embed=em)
 
