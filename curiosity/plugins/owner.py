@@ -4,6 +4,7 @@ import traceback
 import curio
 import sys
 from curio.traps import _get_kernel
+from curious.http.curio_http import ClientSession
 
 from curious import commands
 from curious.commands.context import Context
@@ -38,6 +39,29 @@ class Owner(Plugin):
 
         fmtted = "```py\n{}\n```".format(result)
         await msg.edit(fmtted)
+
+    @commands.command(name="name")
+    async def _change_name(self, ctx: Context, *, new_name: str):
+        """
+        Changes the name of the bot.
+        """
+        await self.bot.edit_profile(username=new_name)
+        await ctx.channel.send(":heavy_check_mark: Changed username.")
+
+    @commands.command(name="avatar")
+    async def _change_avatar(self, ctx: Context, *, avatar_url: str):
+        """
+        Changes the avatar of the bot.
+        """
+        sess = ClientSession()
+        async with sess:
+            req = await sess.get(avatar_url)
+            if req.status_code != 200:
+                await ctx.channel.send(":x: Could not download avatar.")
+                return
+
+            body = await req.binary()
+            await self.bot.edit_profile(avatar=body)
 
     @commands.command(name="load")
     async def _load(self, ctx: Context, *, import_name: str):
