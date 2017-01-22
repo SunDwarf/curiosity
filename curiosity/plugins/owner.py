@@ -1,11 +1,8 @@
 import inspect
 import traceback
-
-import curio
 import sys
-from curio.traps import _get_kernel
-from curious.http.curio_http import ClientSession
 
+from curious.http.curio_http import ClientSession
 from curious import commands
 from curious.commands.context import Context
 from curious.commands.plugin import Plugin
