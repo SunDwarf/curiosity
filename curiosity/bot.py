@@ -8,6 +8,7 @@ from curious.commands.context import Context
 from curious.commands.exc import CheckFailureError, MissingArgumentError, ConversionFailedError
 from curious.dataclasses import Game, Status, Message
 from curious.event import EventContext
+from curious.ext.paginator import ReactionsPaginator
 
 
 class Curiosity(CommandsBot):
@@ -29,7 +30,14 @@ class Curiosity(CommandsBot):
             await ctx.channel.send(":x: {}".format(str(exc)))
         else:
             fmtted = traceback.format_exception(None, exc, exc.__traceback__)
-            await ctx.channel.send("```{}```".format(''.join(fmtted)))
+            final = "```{}```".format(''.join(fmtted))
+            if len(final) < 1900:
+                await ctx.channel.send(final)
+            else:
+                items = ["```{}```".format(i) for i in traceback.format_exception(None, exc.__cause__,
+                                                                                  exc.__cause__.__traceback__)]
+                p = ReactionsPaginator(channel=ctx.channel, content=items, respond_to=ctx.message.author.user)
+                await p.paginate()
 
     async def on_connect(self, ctx):
         self.logger.info("Connected to Discord on shard {0}, "
