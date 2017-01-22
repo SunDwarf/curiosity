@@ -1,4 +1,5 @@
 import datetime
+import inspect
 import sys
 
 import curio
@@ -14,7 +15,7 @@ from pyowm.webapi25.weather import Weather
 
 import curious
 from curiosity.bot import Curiosity
-from curious.commands import command, group
+from curious.commands import command, group, Command
 from curious.commands.context import Context
 from curious.commands.plugin import Plugin
 from curious.dataclasses.embed import Embed
@@ -33,6 +34,30 @@ class Misc(Plugin):
             raise RuntimeError("No API key provided for OpenWeatherMap")
 
         self._owm = pyowm.OWM(API_key=key)
+
+    @command()
+    async def source(self, ctx: Context, *, command: str):
+        """
+        Gets the source for a command.
+        """
+        parts = command.split(" ")
+
+        command_obb = None  # type: Command
+
+        for part in parts:
+            command_obb = ctx.bot.get_command(part)
+
+            if not command_obb:
+                await ctx.channel.send(":x: No such command: `{}`".format(command))
+                return
+
+        # extract the source from the code object
+        lines, firstlineno = inspect.getsourcelines(command_obb.callable.__code__)
+        module = command_obb.callable.__module__.replace('.', '/') + '.py'
+        url = '<https://github.com/SunDwarf/curiosity/blob/master/{}#L{}-L{}>'.format(module, firstlineno,
+                                                                                      firstlineno + len(lines) - 1)
+
+        await ctx.channel.send(url)
 
     @command()
     async def info(self, ctx: Context):
