@@ -60,6 +60,15 @@ class Owner(Plugin):
             body = await req.binary()
             await self.bot.edit_profile(avatar=body)
 
+    @commands.command(name="reload")
+    async def _reload(self, ctx: Context, *, import_name: str):
+        """
+        Reloads a plugin.
+        """
+        await self.bot.unload_plugins_from(import_name)
+        await self.bot.load_plugins_from(import_name)
+        await ctx.channel.send(":heavy_check_mark: Reloaded.")
+
     @commands.command(name="load")
     async def _load(self, ctx: Context, *, import_name: str):
         """
