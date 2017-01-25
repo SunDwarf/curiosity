@@ -6,7 +6,8 @@ from ruamel import yaml
 from curious.commands.bot import CommandsBot
 from curious.commands.context import Context
 from curious.commands.exc import CheckFailureError, MissingArgumentError, ConversionFailedError
-from curious.dataclasses import Game, Status, Message
+from curious.dataclasses.status import Game, Status
+from curious.dataclasses.message import Message
 from curious.event import EventContext
 from curious.ext.paginator import ReactionsPaginator
 
