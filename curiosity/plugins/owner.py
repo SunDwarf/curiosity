@@ -9,7 +9,7 @@ from curious.commands.plugin import Plugin
 
 
 def is_owner(self, ctx: Context):
-    return ctx.author.id == 141545699442425856 or ctx.message.author.id == ctx.bot.application_info.owner.id
+    return ctx.author.id == 214796473689178133 or ctx.message.author.id == ctx.bot.application_info.owner.id
 
 
 class Owner(Plugin):
