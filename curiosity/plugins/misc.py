@@ -38,6 +38,20 @@ class Misc(Plugin):
         self._owm = pyowm.OWM(API_key=key)
 
     @command()
+    async def ping(self, ctx: Context):
+        """
+        Pings the bot.
+        """
+        before = time.monotonic()
+        base = await ctx.channel.send("Pong!")
+        after = time.monotonic()
+
+        taken = round((after - before) * 1000, 2)
+        gw_time = ctx.event_context.gateway.hb_stats.gw_time
+        gw_time = round(gw_time * 1000, 2)
+        await base.edit("Pong! | **HTTP latency: {}ms** | **Gateway latency: {}ms**".format(taken, gw_time))
+
+    @command()
     async def source(self, ctx: Context, *, command: str):
         """
         Gets the source for a command.
