@@ -14,3 +14,17 @@ class Moderation(Plugin):
         """
         removed = await ctx.channel.purge(limit=100, author=ctx.guild.me, fallback_from_bulk=True)
         await ctx.channel.send("Removed `{}` messages.".format(removed))
+
+    @commands.command()
+    async def xban(self, ctx: Context, *, user_id: int):
+        """
+        Hackbans somebody.
+        """
+        member = await ctx.guild.get_member(user_id)
+        if member:
+            await ctx.channel.send(":x: Ban them yourselves")
+
+        user = await ctx.bot.get_user(user_id)
+        await ctx.guild.ban(user)
+        await ctx.channel.send(":x: Banned user `{}`.".format(user.name))
+
