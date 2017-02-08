@@ -87,7 +87,7 @@ class Misc(Plugin):
         # bot stats
         em.add_field(name="Shard ID", value=ctx.event_context.shard_id)
         em.add_field(name="Shard count", value=ctx.event_context.shard_count)
-        em.add_field(name="Heartbeats", value=ctx.bot._gateways[ctx.event_context.shard_id].heartbeats)
+        em.add_field(name="Heartbeats", value=ctx.bot._gateways[ctx.event_context.shard_id].hb_stats.heartbeats)
         # general stats
         us = psutil.Process()
         used_memory = us.memory_info().rss
