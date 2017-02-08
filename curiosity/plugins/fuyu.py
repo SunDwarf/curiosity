@@ -21,7 +21,7 @@ class Fuyu(Plugin):
     """
 
     async def plugin_check(self, ctx: Context):
-        return ctx.guild.id == 198101180180594688
+        return ctx.guild.id == 198101180180594688 or ctx.guild.id == 139517229178814464
 
     @command(aliases=["guildname"])
     async def servername(self, ctx: Context, *, server_name: str):
@@ -125,9 +125,9 @@ class Fuyu(Plugin):
         for member in ctx.guild.members:
             r = random.choice([1, 2])
             if r == 1:
-                name = romkan.to_katakana(member.nickname)
+                name = romkan.to_katakana(member.name)
             elif r == 2:
-                name = romkan.to_hiragana(member.nickname)
+                name = romkan.to_hiragana(member.name)
             coros.append(await curio.spawn(member.change_nickname(name)))
 
         async with ctx.channel.typing:
