@@ -20,7 +20,7 @@ class Moderation(Plugin):
         """
         Hackbans somebody.
         """
-        member = await ctx.guild.get_member(user_id)
+        member = await ctx.guild.members.get(user_id)
         if member:
             await ctx.channel.send(":x: Ban them yourselves")
 
