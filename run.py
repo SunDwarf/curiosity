@@ -8,6 +8,7 @@ import logbook
 from logbook.compat import redirect_logging
 
 from curiosity.bot import Curiosity
+from curious.client import AUTOSHARD
 
 redirect_logging()
 
@@ -17,4 +18,4 @@ logging.getLogger().setLevel(level=logging.INFO)
 
 if __name__ == "__main__":
     bot = Curiosity()
-    bot.run(shards=1)
+    bot.run(shards=AUTOSHARD)
