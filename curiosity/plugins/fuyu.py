@@ -75,7 +75,7 @@ class Fuyu(Plugin):
         Makes the server screaming.
         """
         coros = []
-        for member in ctx.guild.members:
+        for member in ctx.guild.members.values():
             coros.append(await curio.spawn(member.change_nickname(member.user.name.upper())))
 
         async with ctx.channel.typing:
@@ -90,7 +90,7 @@ class Fuyu(Plugin):
         Makes the server quiet.
         """
         coros = []
-        for member in ctx.guild.members:
+        for member in ctx.guild.members.values():
             coros.append(await curio.spawn(member.change_nickname(member.user.name.lower())))
 
         async with ctx.channel.typing:
@@ -106,7 +106,7 @@ class Fuyu(Plugin):
         Mass-nicks the server.
         """
         coros = []
-        for member in ctx.guild.members:
+        for member in ctx.guild.members.values():
             coros.append(await curio.spawn(member.change_nickname("{}{}{}".format(prefix, member.user.name, suffix))))
 
         async with ctx.channel.typing:
@@ -122,7 +122,7 @@ class Fuyu(Plugin):
         Weebifys the server.
         """
         coros = []
-        for member in ctx.guild.members:
+        for member in ctx.guild.members.values():
             r = random.choice([1, 2])
             if r == 1:
                 name = romkan.to_katakana(member.name)
