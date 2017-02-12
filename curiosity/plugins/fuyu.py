@@ -21,7 +21,7 @@ class Fuyu(Plugin):
     """
 
     async def plugin_check(self, ctx: Context):
-        return ctx.guild.id == 198101180180594688 or ctx.guild.id == 139517229178814464
+        return ctx.guild.id == 198101180180594688
 
     @command(aliases=["guildname"])
     async def servername(self, ctx: Context, *, server_name: str):
