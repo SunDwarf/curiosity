@@ -22,7 +22,7 @@ class Curiosity(Client):
             raise SystemExit(1) from e
 
         token = self.config["bot_token"]
-        super().__init__(token, command_prefix="c!", enable_commands=False)
+        super().__init__(token, command_prefix="c!", enable_commands=True)
 
         self.logger = logbook.Logger("curiosity")
 
