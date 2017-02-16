@@ -3,16 +3,16 @@ import traceback
 import logbook
 from ruamel import yaml
 
-from curious.commands.bot import CommandsBot
+from curious.client import Client
 from curious.commands.context import Context
 from curious.commands.exc import CheckFailureError, MissingArgumentError, ConversionFailedError
 from curious.dataclasses.status import Game, Status
 from curious.dataclasses.message import Message
-from curious.event import EventContext
+from curious.event import EventContext, event
 from curious.ext.paginator import ReactionsPaginator
 
 
-class Curiosity(CommandsBot):
+class Curiosity(Client):
     def __init__(self):
         try:
             with open("config.yml") as f:
@@ -22,11 +22,12 @@ class Curiosity(CommandsBot):
             raise SystemExit(1) from e
 
         token = self.config["bot_token"]
-        super().__init__(token, command_prefix="c!")
+        super().__init__(token, command_prefix="c!", enable_commands=False)
 
         self.logger = logbook.Logger("curiosity")
 
-    async def on_command_error(self, ctx: Context, exc: Exception):
+    @event("command_error")
+    async def cmd_error(self, ctx: Context, exc: Exception):
         if isinstance(exc, (CheckFailureError, MissingArgumentError, ConversionFailedError)):
             await ctx.channel.send(":x: {}".format(str(exc)))
         else:
@@ -40,6 +41,7 @@ class Curiosity(CommandsBot):
                 p = ReactionsPaginator(channel=ctx.channel, content=items, respond_to=ctx.message.author.user)
                 await p.paginate()
 
+    @event("connect")
     async def on_connect(self, ctx):
         self.logger.info("Connected to Discord on shard {0}, "
                          "logged in as {1.name}#{1.discriminator}.".format(ctx.shard_id, self.user))
@@ -48,6 +50,7 @@ class Curiosity(CommandsBot):
 
         await self.change_status(game=Game(name="curiosity loading..."), status=Status.DND, shard_id=ctx.shard_id)
 
+    @event("ready")
     async def on_ready(self, ctx):
         await self.change_status(game=Game(
             name="[shard {}/{}] curio is the future!".format(ctx.shard_id + 1, self.shard_count)
@@ -65,6 +68,7 @@ class Curiosity(CommandsBot):
             else:
                 self.logger.info("Loaded plugin {}.".format(plugin))
 
+    @event("message_create")
     async def on_message_create(self, ctx: EventContext, message: Message):
         self.logger.info("Recieved message: {message.content} "
                          "from {message.author.name} ({message.author.user.name}){bot}"
