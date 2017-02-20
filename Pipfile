@@ -3,6 +3,6 @@ url = "https://pypi.python.org/simple"
 verify_ssl = true
 
 [packages]
-discord-curious = "*"
+discord-curious = "==0.2.0"
 pyowm = "*"
 psutil = "*"
