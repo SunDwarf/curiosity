@@ -8,7 +8,7 @@ import logbook
 from logbook.compat import redirect_logging
 
 from curiosity.bot import Curiosity
-from curious.client import AUTOSHARD
+from curious.core.client import AUTOSHARD
 
 redirect_logging()
 

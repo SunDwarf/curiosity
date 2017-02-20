@@ -1,13 +1,13 @@
 import traceback
-
-import logbook
 from ruamel import yaml
 
-from curious.client import Client
+import logbook
+
+from curious.core.client import Client
 from curious.commands.context import Context
-from curious.commands.exc import CheckFailureError, MissingArgumentError, ConversionFailedError
-from curious.dataclasses.status import Game, Status
+from curious.commands.exc import CheckFailureError, ConversionFailedError, MissingArgumentError
 from curious.dataclasses.message import Message
+from curious.dataclasses.status import Game, Status
 from curious.event import EventContext, event
 from curious.ext.paginator import ReactionsPaginator
 
