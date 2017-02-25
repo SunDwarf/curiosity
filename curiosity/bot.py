@@ -3,12 +3,12 @@ from ruamel import yaml
 
 import logbook
 
-from curious.core.client import Client
 from curious.commands.context import Context
 from curious.commands.exc import CheckFailureError, ConversionFailedError, MissingArgumentError
+from curious.core.client import Client
+from curious.core.event import EventContext, event
 from curious.dataclasses.message import Message
 from curious.dataclasses.status import Game, Status
-from curious.event import EventContext, event
 from curious.ext.paginator import ReactionsPaginator
 
 
