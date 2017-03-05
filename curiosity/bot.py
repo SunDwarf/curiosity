@@ -5,7 +5,7 @@ import logbook
 
 from curious.commands.context import Context
 from curious.commands.exc import CheckFailureError, ConversionFailedError, MissingArgumentError
-from curious.core.client import Client
+from curious.core.client import Client, BotType
 from curious.core.event import EventContext, event
 from curious.dataclasses.message import Message
 from curious.dataclasses.status import Game, Status
@@ -22,7 +22,8 @@ class Curiosity(Client):
             raise SystemExit(1) from e
 
         token = self.config["bot_token"]
-        super().__init__(token, command_prefix="c!", enable_commands=True)
+        super().__init__(token, command_prefix="c!", enable_commands=True,
+                         bot_type=(BotType.BOT | BotType.ONLY_USER | BotType.NO_DMS))
 
         self.logger = logbook.Logger("curiosity")
 
