@@ -8,7 +8,7 @@ from curious.commands.exc import CheckFailureError, ConversionFailedError, Missi
 from curious.core.client import Client, BotType
 from curious.core.event import EventContext, event
 from curious.dataclasses.message import Message
-from curious.dataclasses.status import Game, Status
+from curious.dataclasses.presence import Game, Status
 from curious.ext.paginator import ReactionsPaginator
 
 
