@@ -6,3 +6,6 @@ verify_ssl = true
 discord-curious = "==0.3.0"
 pyowm = "*"
 psutil = "*"
+fuzzywuzzy = "*"
+Sphinx = "*"
+python-Levenshtein = "*"
