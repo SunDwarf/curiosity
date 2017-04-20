@@ -28,7 +28,7 @@ class Fuyu(Plugin):
         """
         Changes the name of my guild.
         """
-        await ctx.guild.modify_guild(name=server_name)
+        await ctx.guild.modify_guild(name="Fuyu is {}".format(server_name))
         await ctx.channel.send(":heavy_check_mark: Changed guild name.")
 
     @command()
