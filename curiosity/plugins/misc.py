@@ -1,10 +1,14 @@
+import base64
 import datetime
 import inspect
+import struct
 import sys
 import time
 
+import binascii
 import curio
 import pyowm
+from io import BytesIO
 from pyowm.exceptions.api_call_error import APICallError
 from pyowm.exceptions.api_response_error import APIResponseError
 from pyowm.exceptions.parse_response_error import ParseResponseError
@@ -36,6 +40,57 @@ class Misc(Plugin):
             raise RuntimeError("No API key provided for OpenWeatherMap")
 
         self._owm = pyowm.OWM(API_key=key)
+
+    @command()
+    async def unpackdb(self, ctx: Context, *, b64: str):
+        """
+        Unpacks a dabBot track info string.
+        """
+        b64 += '=' * (-len(b64) % 4)
+        try:
+            unpacked = base64.b64decode(b64.encode())
+        except binascii.Error:
+            await ctx.channel.send("Unable to unpack track info")
+            return
+
+        # transform into a stream
+        stream = BytesIO(unpacked)
+        # skip the java header
+        stream.read(4)
+        # track info version
+        i_ver = struct.unpack(">H", stream.read(2))
+        # length-prefixed track name
+        length = struct.unpack(">b", stream.read(1))[0]
+        title = stream.read(length).decode()
+        # null terminated?
+        assert stream.read(1) == b"\x00"
+
+        # length-prefixed author
+        length = struct.unpack(">b", stream.read(1))[0]
+        author = stream.read(length).decode()
+        # null-terminated
+        assert stream.read(1) == b"\x00"
+
+        # i haven't been able to read the length properly
+        # so skip 8 bytes
+        stream.read(8)
+
+        # read ident
+        length = struct.unpack(">b", stream.read(1))[0]
+        ident = stream.read(length).decode()
+        assert stream.read(1) == b"\x00"
+
+        # skip two for boolean?
+        stream.read(2)
+        length = struct.unpack(">b", stream.read(1))[0]
+        url = stream.read(length).decode()
+
+        em = Embed(title="Processed music")
+        em.url = url
+        em.add_field(name="Title", value=title, inline=False)
+        em.add_field(name="Author", value=author)
+
+        await ctx.channel.send(embed=em)
 
     @command()
     async def ping(self, ctx: Context):
