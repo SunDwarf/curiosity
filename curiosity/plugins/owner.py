@@ -1,8 +1,9 @@
 import inspect
-import traceback
 import sys
+import traceback
 
-from curious.http.curio_http import ClientSession
+import asks
+
 from curious import commands
 from curious.commands.context import Context
 from curious.commands.plugin import Plugin
@@ -50,15 +51,14 @@ class Owner(Plugin):
         """
         Changes the avatar of the bot.
         """
-        sess = ClientSession()
-        async with sess:
-            req = await sess.get(avatar_url)
-            if req.status_code != 200:
-                await ctx.channel.send(":x: Could not download avatar.")
-                return
+        sess = asks.Session()
+        req = await sess.get(avatar_url)
+        if req.status_code != 200:
+            await ctx.channel.send(":x: Could not download avatar.")
+            return
 
-            body = await req.binary()
-            await self.bot.edit_profile(avatar=body)
+        body = await req.binary()
+        await self.bot.edit_profile(avatar=body)
 
     @commands.command(name="reload")
     async def _reload(self, ctx: Context, *, import_name: str):
